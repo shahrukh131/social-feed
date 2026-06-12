@@ -1,38 +1,27 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
-import {
-  IsEnum,
-  IsOptional,
-  IsString,
-  MaxLength,
-  MinLength,
-} from 'class-validator';
 import { PostVisibility } from '../entities/post.entity';
 
-export class CreatePostDto {
+export class CreatePostFormDataDto {
   @ApiProperty({
     example: 'Hello from my first post',
     minLength: 1,
     maxLength: 5000,
   })
-  @IsString()
-  @MinLength(1)
-  @MaxLength(5000)
   text!: string;
 
   @ApiProperty({ enum: PostVisibility, example: PostVisibility.PUBLIC })
-  @Transform(({ value }) =>
-    typeof value === 'string' ? value.trim().toLowerCase() : value,
-  )
-  @IsEnum(PostVisibility)
   visibility!: PostVisibility;
 
   @ApiPropertyOptional({
     example: 'https://cdn.example.com/image.jpg',
     description: 'Optional image URL when not uploading a file',
   })
-  @IsOptional()
-  @IsString()
-  @MaxLength(2048)
   imageUrl?: string;
+
+  @ApiPropertyOptional({
+    type: 'string',
+    format: 'binary',
+    description: 'Optional uploaded image file',
+  })
+  image?: any;
 }
